@@ -69,35 +69,34 @@ def rect_iou(rects1, rects2):
     ious = np.clip(ious, 0.0, 1.0)
 
     return ious
-def c_e_a_r_c(x1, y1, w, h, W, H):
+def c_e_a_r_c(x1, y1, w, h, Scale, W, H):
+
     x_min = x1 - w / 2
     y_min = y1 - h / 2
     x_max = x1 + w / 2
     y_max = y1 + h / 2
     
 
-    clipped_x_min = max(0, x_min)  
-    clipped_y_min = max(0, y_min)  
-    clipped_x_max = min(W, x_max)  
-    clipped_y_max = min(H, y_max)  
+    clipped_x_min = max(W*(1-Scale), x_min) 
+    clipped_y_min = max(H*(1-Scale), y_min)  
+    clipped_x_max = min(W*Scale, x_max)  
+    clipped_y_max = min(H*Scale, y_max)  
     
-
+ 
     clipped_w = max(0, clipped_x_max - clipped_x_min)
     clipped_h = max(0, clipped_y_max - clipped_y_min)
     
 
     effective_area = clipped_w * clipped_h
     
-
+ 
     original_area = w * h
     
 
     if original_area == 0:
         return 0
-    
 
     effective_area_ratio = effective_area / original_area
-    
     return effective_area_ratio
 def clip_box(box: list, H, W, margin=0):
     x1, y1, w, h = box
@@ -318,7 +317,7 @@ for idx in range(len_dataset):
 
 
 
-            e_a_r = c_e_a_r_c(x1, y1, w, h, W*0.95, HH*0.95)
+            e_a_r = c_e_a_r_c(x1, y1, w, h, 0.95, W, HH)
 
 
             if  e_a_r < 0.99  and ofv_flag == False and edge_free == 0:
@@ -407,7 +406,7 @@ for idx in range(len_dataset):
                             p_w = w
                             p_h = h
                         # print("p_w : ",p_w, "w : ",w,"p_h : ",p_h, "h : ",h)
-                        e_a_r = c_e_a_r_c(x_c, y_c, p_w, p_h, W, HH)
+                        e_a_r = c_e_a_r_c(x_c, y_c, p_w, p_h, 1, W, HH)
                         if e_a_r < 0.99 :
                             ofv_flag = True
                             break
@@ -424,8 +423,8 @@ for idx in range(len_dataset):
                 iou_score_data = gout["conf_score"]
                 global_truth_data = np.array(gout["target_bbox"])
                 print(seq_name," ",frame," two trackers running ", "score : ",iou_score_data, "iou : ", rect_iou(box, global_truth_data))
-                if iou_score_data > 0.6:
-                    if rect_iou(box, global_truth_data) <= 0.5 :
+                if iou_score_data > 0.7:
+                    if rect_iou(box, global_truth_data) <= 0.1 :
                         print(seq_name," ",frame," use global ")
                         box = global_truth_data
                         local_tracker.state = box
