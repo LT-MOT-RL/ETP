@@ -60,4 +60,4 @@ python tools/test_lasot.py
 
 # Others 
 
-Cooning soon~~
+Coming soon~~
