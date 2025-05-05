@@ -243,8 +243,8 @@ for idx in range(len_dataset):
     times= np.zeros(frame_num)
     boxes[0] = anno[0, :]
     iou[0]=1.0
-    record_file = os.path.join("results/LaSOT", "etp_ot", '%s.txt' % seq_name)
-    record_dir =  os.path.join("results/LaSOT", "etp_ot", seq_name)
+    record_file = os.path.join("results/LaSOT", "Etp_ot", '%s.txt' % seq_name)
+    record_dir =  os.path.join("results/LaSOT", "Etp_ot", seq_name)
 
 
 
@@ -341,20 +341,23 @@ for idx in range(len_dataset):
                     world_pos = np.concatenate((world_pos,nones),axis=2)
 
                     a_p_j = world_pos[:,:,:2]
+
                     h_p_j = a_p_j.transpose(1,0,2)
+
                     a_p_j=a_p_j.transpose(0,2,1)
+
                     ra_p_j = np.zeros(a_p_j.shape)
                     ra_p_j[:,:, 1:] = a_p_j[:,:, 1:] - a_p_j[:,:, :-1]
                     a_p_j = torch.from_numpy(a_p_j).type(torch.float)
                     ra_p_j = torch.from_numpy(ra_p_j).type(torch.float)
-                    v_,a_ = seq_to_graph(a_p_j,ra_p_j,True)
+                    v_, _ = seq_to_graph(a_p_j,ra_p_j,True)
                     V_obs = v_.unsqueeze(dim=0)
                     V_obs_tmp = V_obs.permute(0,3,1,2)
                     obs_traj = a_p_j.unsqueeze(dim=0)
                     obs_traj_rel= ra_p_j.unsqueeze(dim=0)
                     V_obs_tmp= V_obs_tmp.to(device)
-                    a_ = a_.to(device)
-                    V_pred,_ = model(V_obs_tmp,a_.squeeze())
+
+                    V_pred = model(V_obs_tmp)
 
                     V_pred = V_pred.permute(0,2,3,1)
                     V_pred = V_pred.squeeze()
@@ -420,13 +423,15 @@ for idx in range(len_dataset):
 
             if ofv_flag == True :
                 gout= global_tracker.track(image, info=None)
-                iou_score_data = gout["conf_score"]
-                global_truth_data = np.array(gout["target_bbox"])
-                print(seq_name," ",frame," two trackers running ", "score : ",iou_score_data, "iou : ", rect_iou(box, global_truth_data))
-                if iou_score_data > 0.7:
-                    if rect_iou(box, global_truth_data) <= 0.1 :
+                global_score = gout["conf_score"]
+                global_box = np.array(gout["target_bbox"])
+                local_global_iou = rect_iou(box, global_box)
+                print(seq_name," ",frame," two trackers running ", "score : ",global_score, "iou : ", local_global_iou)
+
+                if global_score > 0.7:
+                    if local_global_iou <= 0.1 :
                         print(seq_name," ",frame," use global ")
-                        box = global_truth_data
+                        box = global_box
                         local_tracker.state = box
                         x, y, w, h = box
                         x1 = x + w/2

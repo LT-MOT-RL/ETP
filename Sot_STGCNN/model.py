@@ -38,11 +38,10 @@ class sot_stgcnn_raw(nn.Module):
 
 
         
-    def forward(self,v,a):
+    def forward(self,v):
 
         for k in range(self.n_stgcnn):
-            v,a = self.st_gcns[k](v,a)
-            
+            v = self.st_gcns[k](v)
         v = v.view(v.shape[0],v.shape[2],v.shape[1],v.shape[3])
         
         v = self.prelus[0](self.tpcnns[0](v))
@@ -54,7 +53,7 @@ class sot_stgcnn_raw(nn.Module):
         v = v.view(v.shape[0],v.shape[2],v.shape[1],v.shape[3])
         
         
-        return v,a
+        return v
 
 
 
@@ -86,11 +85,9 @@ class ConvTemporalGraphical(nn.Module):
             dilation=(t_dilation, 1),
             bias=bias)
 
-    def forward(self, x, A):
-        assert A.size(0) == self.kernel_size
+    def forward(self, x):
         x = self.conv(x)
-        x = torch.einsum('nctv,tvw->nctw', (x, A))
-        return x.contiguous(), A
+        return x.contiguous()
     
 
 class st_gcn(nn.Module):
@@ -148,16 +145,16 @@ class st_gcn(nn.Module):
 
         self.prelu = nn.PReLU()
 
-    def forward(self, x, A):
+    def forward(self, x):
 
         res = self.residual(x)
-        x, A = self.gcn(x, A)
+        x = self.gcn(x)
 
         x = self.tcn(x) + res
         
         if not self.use_mdn:
             x = self.prelu(x)
 
-        return x, A
+        return x
 
 
