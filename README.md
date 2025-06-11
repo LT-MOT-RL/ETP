@@ -16,7 +16,8 @@ Put the model weights you download in `./test_checkpoint.` The file tree shall l
 ```
    ${PROJECT_ROOT}
     |-- test_checkpoint
-    |   |-- OTETrack_all.pth.tar
+    |   |-- test_checkpoint
+    |   |   |-- OTETrack_all.pth.tar
 ```
 
 
