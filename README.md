@@ -7,6 +7,21 @@ Thanks to the contributors of [OTETrack](https://github.com/OrigamiSL/OTETrack).
 Please place the file `OTETrack_all.pth.tar` into the `./OTETrack/test_checkpoint/` directory.
 For more details, please refer to [OTETrack](https://github.com/OrigamiSL/OTETrack).
 
+
+Weight sources (OTETrack_256_full):
+
+You can download the model weights from [Google Drive](https://drive.google.com/file/d/1-9CceF4HwsudLi9pt5ylDEhYtrgGDhsz/view?usp=sharing) or [Baidu Drive](https://pan.baidu.com/s/1lJz4RlgCE8XW7lV3sXbcBw?pwd=25ur) (extracted code: 25ur).
+
+Put the model weights you download in `./test_checkpoint.` The file tree shall look like this:
+```
+   ${PROJECT_ROOT}
+    |-- test_checkpoint
+    |   |-- OTETrack_all.pth.tar
+```
+
+
+
+
 #  Unicorn
 
 Thanks to the contributors of [Unicorn](https://github.com/MasterBin-IIAU/Unicorn). 
