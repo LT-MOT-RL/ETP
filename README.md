@@ -121,6 +121,6 @@ The file tree of ETP shall look like this:
 python tools/test_lasot.py
 ```
 
-# Others 
+# Others (Train) 
 
 Coming soon~~
