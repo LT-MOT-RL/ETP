@@ -72,7 +72,7 @@ pip3 install --user git+https://github.com/scalabel/scalabel.git
 cd ../../..
 
 The downloaded checkpoints should be organized in the following structure
-
+```
 ${UNICORN_ROOT}
  -- Unicorn_outputs
      -- unicorn_det_convnext_large_800x1280
@@ -88,7 +88,7 @@ ${UNICORN_ROOT}
      -- unicorn_track_r50_mask
          -- latest_ckpt.pth
      ...
-
+```
 
 
 
